@@ -1,8 +1,10 @@
 
+let storedList = [];
+
 const init = async () => {
     let city = document.querySelector('input').value;
     if(!city) return;
-    let storedList = JSON.parse(localStorage.getItem("WeatherAPI")) || []
+    storedList = JSON.parse(localStorage.getItem("WeatherAPI")) || []
     storedList.push(city)
     localStorage.setItem("WeatherAPI",JSON.stringify(storedList))
     getForecast(city)
@@ -50,10 +52,13 @@ async function getForecast(city){
     }
     document.querySelector('#forecast').innerHTML = forecastHTML;
 }
-
-
-
+//function to render the list of cities
+const renderList = () => {
+    let listHTML = "";
+    storedList.forEach((city) => {
+        listHTML += `<li>${city}</li>`;
+    });
+    document.querySelector("#history").innerHTML = listHTML;
+};
 
 document.querySelector('button').addEventListener('click', init);
-
-
