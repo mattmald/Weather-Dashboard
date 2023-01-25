@@ -2,7 +2,13 @@
 const init = async () => {
     let city = document.querySelector('input').value;
     if(!city) return;
+    let storedList = JSON.parse(localStorage.getItem("WeatherAPI")) || []
+    storedList.push(city)
+    localStorage.setItem("WeatherAPI",JSON.stringify(storedList))
+    getForecast(city)
+}
 
+async function getForecast(city){
     let url = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`;
 
     let coord = await fetch(url).then(data=>data.json());
@@ -29,10 +35,10 @@ const init = async () => {
     document.querySelector('#current').innerHTML = showData;
 
     let forecastHTML =""
-    for(let i=0;i<5;i++){
+    for(let i=0;i<daily.length;i++){
         forecastHTML += `
         <article class="data">
-      
+        <h2>${dayjs(daily[i].dt).format('MM/DD/YYYY')}</h2>
         <h3>${daily[i].weather[0].description}</h3>
         <img src="https://openweathermap.org/img/wn/${daily[i].weather[0].icon}.png" alt="">
         <p>Temperature: ${daily[i].temp.day}°F</p>
@@ -46,8 +52,8 @@ const init = async () => {
 }
 
 
-//   <h2>${moment().unix(daily[i].dt).format("MM/DD/YYYY")}</h2>
-//function to get 5 day forecast
+
 
 document.querySelector('button').addEventListener('click', init);
+
 
